@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="css/iconfont.css" />
   <link rel="stylesheet" href="css/main.css" />
   <script src="js/jquery-1.12.4.min.js"></script>
+  <script src="js/bootstrap/js/bootstrap.min.js"></script>
 </head>
 
 <body>
@@ -65,6 +66,28 @@
       </form>
     </div>
   </div>
+
+  <!-- 模态框，用于显示提示信息 -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabel">提示框！！</h4>
+        </div>
+        <div class="modal-body">
+          没有完整填写表单
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">
+            确定
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- 自己的js -->
   <script>
     /*
@@ -94,50 +117,66 @@
           3. 通过ajax 结合formData发送到服务器
           4. 返回数据之后，提示用户
         */
+
+    // 获取用户信息
     $.get({
-      // url: 'http://localhost:8000/admin/userinfo_get',
-      url: 'https://autumnfish.cn/big/admin/userinfo_get',
+      url: 'http://localhost:8000/admin/userinfo_get',
       success: function (res) {
-        // console.log(res)
+        // console.log(res);
         if (res.code === 200) {
-          $("input.username").val(res.data.username);
-          $("input.nickname").val(res.data.nickname);
-          $("input.email").val(res.data.email);
-          $("input.password").val(res.data.password);
-          $('img.user_pic').attr('src', res.data.user_pic);
+          // 如果获取成功,就将修改的信息渲染到表单中
+          $('input.email').val(res.data.email);
+          $('input.nickname').val(res.data.nickname);
+          $('input.password').val(res.data.password);
+          $('input.username').val(res.data.username);
+          $('img.user_pic').prop('scr', res.data.user_pic)
         };
       },
     });
 
     // 本地图片预览
     $('#exampleInputFile').on('change', function () {
-      // 获取临时的图片路径
+      // 获取临时的本地地址
       var src = window.URL.createObjectURL($(this)[0].files[0]);
-      // 然后给显示图片
-      $(this).siblings('img').attr('src', src);
+      // 设给显示的标签
+      $(this).siblings('img').prop('src', src);
     });
+
     // 保存修改
     $('.btn-success').on('click', function (e) {
       // 阻止按钮的默认行为
       e.preventDefault();
-      // 将信息保存到表单里
+      // 检测是否填写完整
+      if (
+        $('.username').val() === '' ||
+        $('.email').val() === '' ||
+        $('.nickname').val() === '' ||
+        $('.password').val() === '' ||
+        !$('#exampleInputFile')[0].files[0]) {
+        // 通过模态框设置提示
+        $('.modal-body').text('没有完整填写表单');
+        $('#myModal').modal();
+        // alert('请将内容填写完整')
+        return;
+      };
+      // 创建一个form表单
       var fd = new FormData($('form')[0]);
 
+      // 发送请求
       // 这个接口是需要传入的图片带有后缀的
       $.post({
-        // url: 'http://localhost:8000/admin/userinfo_edit',
-        url: 'https://autumnfish.cn/big/admin/userinfo_edit',
+        url: 'http://localhost:8000/admin/userinfo_edit',
         data: fd,
-        contentType: false,
-        processData: false,
+        contentType: false, // 不指定内容类型
+        processData: false, //不处理内容
+
         success: function (res) {
           // console.log(res);
           if (res.code === 200) {
-            // window对象
-            location.href = 'login.html';
-            console.log(res)
+            // window对象具有一个属性parent，用于在iframe中获取父页面
+            parent.location.href = 'login.html';
           }
-        }
+        },
       })
     })
   </script>
