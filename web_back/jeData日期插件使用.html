@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <link rel="stylesheet" href="./js/jedate/css/jedate.css">
+    <script src="./js/jedate/js/jedate.js"></script>
+</head>
+
+<body>
+    <button id="btn">按钮</button>
+    <input type="text" id="text">
+    <script src="./js/jquery-1.12.4.min.js"></script>
+    <script>
+        $('#btn').on('click', function () {
+            jeDate('#text', {
+                trigger: false, //不使用插件的默认时间功能
+                format: 'YYYY-MM-DD',
+            })
+        })
+    </script>
+</body>
+
+</html>

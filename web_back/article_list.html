@@ -234,28 +234,28 @@
   <script src="./js/template-web.js"></script>
   <!-- 定义模板 选项 -->
   <script id="article" type="text/template">
-    {{each $data}}
-      <tr>
-            <td>{{$value.title}}</td>
-            <td>{{$value.author}}</td>
-            <td>{{$value.type}}</td>
-            <td class="text-center">{{$value.data}}</td>
+    {{each data}}
+    <tr>
+      <td>{{$value.title}}</td>
+      <td>{{$value.author}}</td>
+      <td>{{$value.type}}</td>
+      <td class="text-center">{{$value.date}}</td>
 
-            <td class="text-center">{{$value.state}}</td>
+      <td class="text-center">{{$value.state}}</td>
 
-            <td class="text-center">
-              <a href="post-edit.html?id=995" class="btn btn-default btn-xs" data-id="{{$value.id}}">编辑</a>
-              <a href="javascript:deleteTr( 995 );" class="btn btn-danger btn-xs" data-id="{{$value.id}}">删除</a>
-            </td>
-          </tr>
+      <td class="text-center">
+        <a href="post-edit.html?id=996" class="btn btn-default btn-xs" data-id="{{$value.id}}">编辑</a>
+        <a href="javascript:deleteTr( 996 );" class="btn btn-danger btn-xs" data-id="{{$value.id}}">删除</a>
+      </td>
+    </tr>
 {{/each}}
   </script>
 
   <!-- 设置下拉菜单选项的模板 -->
   <script type="text/template" id="category">
-    {{each $data}}
-  <option value="{{$value.id}}">{{$value.name}}</option>
-  {{/each}}
+    {{each data}}
+      <option value="{{$value.id}}">{{$value.name}}</option>
+    {{/each}}
   </script>
 
   <!-- 自己的js -->
@@ -281,145 +281,194 @@
 
 
         */
+    // 文章列表
+    // var currentPage = 1;
+    // var totalPage;
+    // getArticle();
+    // // 获取文章类表
+    // $.get({
+    //   url: 'http://localhost:8000/admin/category_search',
+    //   success: function (res) {
+    //     console.log(res);
+    //     if (res.code === 200) {
+    //       $('#selCategory').append(template('category', res))
+    //     }
+    //   }
+    // })
 
-    // 全局中设置一些初始值方便后续操作
-    //  设置当前页号
-    var currentPage = 1; //默认显示第一页
-    var totalPage; // 可以不设置默认值
+    // // 筛选
+    // $('#btnSearch').on('click', function () {
+    //   // 清除原来的分页格式
+    //   $('.pagination').twbsPagination('destroy');
+    //   getArticle();
+    // })
 
 
-    // 进行第一次结构创建和分页设置
-    getArticle();
-
-    // 筛选功能
-    //  获分类设置的信息
+    // 获取文章类表
     $.get({
       url: 'http://localhost:8000/admin/category_search',
       success: function (res) {
-        // console.log(res);
         if (res.code === 200) {
-          $('#selCategory').append(template('category', res.data));
+          $('#selCategory').append(template('category', res))
         }
       }
     });
 
-    // 设置筛选事件,调用getArtical获取最新数据
+    // 点击筛选
     $('#btnSearch').on('click', function () {
-      // 将旧的分页结构销毁
+      // 先清除原来的分页设置
       $('.pagination').twbsPagination('destroy');
-      // 再创建新的结构
       getArticle();
     })
+    // 定义默认页
+    var currentPage = 1;
+    // 获取页面的信息
+    getArticle();
 
-
-    function getArticle() { // 封装一个函数,方便调用
+    function getArticle() {
       $.get({
         url: 'http://localhost:8000/admin/search',
         data: {
+          page: currentPage, //默认页
+          perpage: 8, //一页显示几个数据
           type: $('#selCategory').val(),
           state: $('#selStatus').val(),
-          page: currentPage,
-          perpage: 8, //每页显示几个数据
         },
         success: function (res) {
-          console.log(res);
+          console.log(res)
           if (res.code === 200) {
-            // 通过模板创建结构
-            $('tbody').html(template('article', res.data));
-
-            // 设置分页功能
-            //  - 将当期的最新页数设置给totalPage
-            totalPage = res.totalPage
-            // 设置分页
+            $('tbody').html(template('article', res));
+            // 分页设置
+            // var totalPage = res.totalPages;
             $('.pagination').twbsPagination({
-              // 设置总页数
-              totalPages: totalPage,
-              // 每页显示几个
+              totalPages: res.totalPage,
               visiblePage: 5,
-              // 当前页
-              startPage: 1,
-              // 页码的操作
+              startPage: currentPage,
               first: '首页',
               last: '尾页',
-              next: '下一页',
               prev: '上一页',
+              next: '下一页',
               onPageClick: function (event, page) {
-                // event:事件对象
-                // 进行页号的设置
                 currentPage = page;
                 getArticle();
-              },
-            });
-          };
-        },
-      });
-    };
+              }
+            })
+          }
+        }
+      })
+    }
+    // function getArticle() {
+    //   $.get({
+    //     url: 'http://localhost:8000/admin/search',
+    //     data: {
+    //       page: currentPage,
+    //       perpage: 8,
+    //       type: $('#selCategory').val(),
+    //       state: $('#selStatus').val(),
+    //     },
+    //     success: function (res) {
+    //       // console.log(res);
+    //       if (res.code === 200) {
+    //         $('tbody').html(template('article', res))
+
+    //         // 进行分页设计
+    //         //  - 将当期的最新页数设置给totalPage
+    //         totalPage = res.totalPage
+    //         $('.pagination').twbsPagination({
+    //           totalPages: totalPage,
+    //           visiblePage: 5,
+    //           startPage: currentPage,
+    //           first: '首页',
+    //           last: '尾页',
+    //           prev: '上一页',
+    //           next: "下一页",
+    //           onPageClick: function (event, page) {
+    //             currentPage = page;
+    //             getArticle();
+    //           }
+    //         })
+    //       };
+    //     },
+    //   });
+    // };
+
+    // 全局中设置一些初始值方便后续操作
+    // //  设置当前页号
+    // var currentPage = 1; //默认显示第一页
+    // var totalPage; // 可以不设置默认值
 
 
+    // // 进行第一次结构创建和分页设置
+    // getArticle();
 
-
-    // $(function() {
-    //   // 页码
-    //   var myPage = 1
-    //   // 总页数
-    //   var myTotalPage = 10
-
-    //   // 根据分页插件的示例修改分页插件的使用
-    //   var $pagination = $('.pagination')
-    //   var defaultOpts = {
-    //     totalPages: myTotalPage,
-    //     visiblePages: 7,
-    //     first: '最那边',
-    //     last: '最外头',
-    //     prev: '上一页',
-    //     next: '下一页',
-    //     onPageClick: function(event, page) {
-    //       // 事件参数
-    //       // console.log(event)
-    //       // 页码
-    //       // console.log(page)
-    //       myPage = page
-    //       // 重新调用获取文章数据的方法
-    //       getArticles()
+    // // 筛选功能
+    // //  获分类设置的信息
+    // $.get({
+    //   url: 'http://localhost:8000/admin/category_search',
+    //   success: function (res) {
+    //     console.log(res);
+    //     if (res.code === 200) {
+    //       $('#selCategory').append(template('category', res));
     //     }
     //   }
-    //   $pagination.twbsPagination(defaultOpts)
+    // });
 
-    //   // 获取文章数据的方法
-    //   function getArticles() {
-    //     $.ajax({
-    //       url: 'http://localhost:8000/admin/search',
-    //       data: {
-    //         page: myPage,
-    //         perpage: 6,
-    //         // 文章的分类id
-    //         type: $('#selCategory').val(),
-    //         // 状态
-    //         state: $('#selStatus').val()
-    //       },
-    //       success: function(backData) {
-    //         console.log(backData)
-    //         // 方法
-    //         var html = template('article', backData)
-    //         // tbody中
-    //         $('tbody').html(html)
-    //         // 重置页码
-    //         var totalPages = backData.totalPage
-    //         if (myTotalPage != totalPages) {
-    //           // 总页数变了
-    //           myTotalPage = totalPages
-    //           // 写死为第一页即可
-    //           $pagination.twbsPagination('destroy')
-    //           $pagination.twbsPagination(
-    //             $.extend({}, defaultOpts, {
-    //               startPage: 1,
-    //               totalPages: totalPages
-    //             })
-    //           )
-    //         }
-    //       }
-    //     })
-    //   }
+    // // 设置筛选事件,调用getArtical获取最新数据
+    // $('#btnSearch').on('click', function () {
+    //   // 将旧的分页结构销毁
+    //   $('.pagination').twbsPagination('destroy');
+    //   // 再创建新的结构
+    //   getArticle();
+    // })
+
+
+    // function getArticle() { // 封装一个函数,方便调用
+    //   $.get({
+    //     url: 'http://localhost:8000/admin/search',
+    //     data: {
+    //       type: $('#selCategory').val(),
+    //       state: $('#selStatus').val(),
+    //       page: currentPage,
+    //       perpage: 8, //每页显示几个数据
+    //     },
+    //     success: function (res) {
+    //       // console.log(res);
+    //       if (res.code === 200) {
+    //         // 通过模板创建结构
+    //         $('tbody').html(template('article', res));
+
+    //         // 设置分页功能
+    //         //  - 将当期的最新页数设置给totalPage
+    //         totalPage = res.totalPage
+    //         // 设置分页
+    //         $('.pagination').twbsPagination({
+    //           // 设置总页数
+    //           totalPages: totalPage,
+    //           // 每页显示几个
+    //           visiblePage: 5,
+    //           // 当前页
+    //           startPage: 1,
+    //           // 页码的操作
+    //           first: '首页',
+    //           last: '尾页',
+    //           next: '下一页',
+    //           prev: '上一页',
+    //           onPageClick: function (event, page) {
+    //             // event:事件对象
+    //             // 进行页号的设置
+    //             currentPage = page;
+    //             getArticle();
+    //           },
+    //         });
+    //       };
+    //     },
+    //   });
+    // };
+
+
+
+
+
 
     //   // 获取分类数据
     //   $.ajax({

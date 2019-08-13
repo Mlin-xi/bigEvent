@@ -76,15 +76,15 @@
   */
 
   $('.input_sub').on('click', function (e) {
-    // 阻止默认跳转
+    // 阻止默认行为
     e.preventDefault();
-    // 判断输入框是否填写完整
-    if ($('.input_txt').val === '' || $('.input_pass').val() === '') {
+    // 判断是否为空
+    if ($('.input_txt').val() === '' || $('.input_pass').val() === '') {
       $('#myModal').modal();
-      $('.modal-body').text('请将信息填写完整');
+      $('.modal-body').text('请将信息输入完整');
       return;
     }
-    // 请求服务端
+    // 发送请求:
     $.post({
       url: 'https://autumnfish.cn/big/admin/login',
       data: {
@@ -92,16 +92,53 @@
         password: $('.input_pass').val()
       },
       success: function (res) {
-        console.log(res);
-        // 判断是否登录成功
         if (res.code === 200) {
-          location.href = './index.html';
+          location.href = "./index.html";
         } else if (res.code === 400) {
           $('#myModal').modal();
-          $('.modal-body').text('用户名或密码输入错误');
+          $('.modal-body').text('密码或用户名错误');
 
-        }
-      }
-    })
-  })
+          // $('.input_txt').val('');
+          $('.input_pass').val('');
+          return;
+        };
+      },
+    });
+  });
+
+
+
+
+
+
+
+  // $('.input_sub').on('click', function (e) {
+  //   // 阻止默认跳转
+  //   e.preventDefault();
+  //   // 判断输入框是否填写完整
+  //   if ($('.input_txt').val === '' || $('.input_pass').val() === '') {
+  //     $('#myModal').modal();
+  //     $('.modal-body').text('请将信息填写完整');
+  //     return;
+  //   }
+  //   // 请求服务端
+  //   $.post({
+  //     url: 'https://autumnfish.cn/big/admin/login',
+  //     data: {
+  //       user_name: $('.input_txt').val(),
+  //       password: $('.input_pass').val()
+  //     },
+  //     success: function (res) {
+  //       console.log(res);
+  //       // 判断是否登录成功
+  //       if (res.code === 200) {
+  //         location.href = './index.html';
+  //       } else if (res.code === 400) {
+  //         $('#myModal').modal();
+  //         $('.modal-body').text('用户名或密码输入错误');
+
+  //       }
+  //     }
+  //   })
+  // })
 </script>

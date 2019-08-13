@@ -118,14 +118,30 @@
           4. 返回数据之后，提示用户
         */
 
+
+
     // 获取用户信息
+    // $.get({
+    //   url: 'http://localhost:8000/admin/userinfo_get',
+    //   success: function (res) {
+    //     // console.log(res);
+    //     if (res.code === 200) {
+    //       // 如果获取成功,就将修改的信息渲染到表单中
+    //       $('input.email').val(res.data.email);
+    //       $('input.nickname').val(res.data.nickname);
+    //       $('input.password').val(res.data.password);
+    //       $('input.username').val(res.data.username);
+    //       $('img.user_pic').prop('scr', res.data.user_pic)
+    //     };
+    //   },
+    // });
+
     $.get({
       url: 'http://localhost:8000/admin/userinfo_get',
       success: function (res) {
-        // console.log(res);
+        // console.log(res)
         if (res.code === 200) {
-          // 如果获取成功,就将修改的信息渲染到表单中
-          $('input.email').val(res.data.email);
+          $('.input.email').val(res.data.email);
           $('input.nickname').val(res.data.nickname);
           $('input.password').val(res.data.password);
           $('input.username').val(res.data.username);
@@ -135,50 +151,83 @@
     });
 
     // 本地图片预览
+
     $('#exampleInputFile').on('change', function () {
-      // 获取临时的本地地址
-      var src = window.URL.createObjectURL($(this)[0].files[0]);
-      // 设给显示的标签
+      var src = URL.createObjectURL($(this)[0].files[0]);
       $(this).siblings('img').prop('src', src);
-    });
+    })
+    // $('#exampleInputFile').on('change', function () {
+    //   // 获取临时的本地地址
+    //   var src = window.URL.createObjectURL($(this)[0].files[0]);
+    //   // 设给显示的标签
+    //   $(this).siblings('img').prop('src', src);
+    // });
 
     // 保存修改
     $('.btn-success').on('click', function (e) {
-      // 阻止按钮的默认行为
+      // 阻止默认行为
       e.preventDefault();
-      // 检测是否填写完整
-      if (
-        $('.username').val() === '' ||
+      // 判断是否为空
+      if ($('.username').val() === '' ||
         $('.email').val() === '' ||
         $('.nickname').val() === '' ||
         $('.password').val() === '' ||
         !$('#exampleInputFile')[0].files[0]) {
-        // 通过模态框设置提示
-        $('.modal-body').text('没有完整填写表单');
         $('#myModal').modal();
-        // alert('请将内容填写完整')
+        $('.modal-body').text('请将信息填写完整');
         return;
       };
-      // 创建一个form表单
+      // 创建一个表单
       var fd = new FormData($('form')[0]);
-
       // 发送请求
-      // 这个接口是需要传入的图片带有后缀的
       $.post({
         url: 'http://localhost:8000/admin/userinfo_edit',
         data: fd,
         contentType: false, // 不指定内容类型
         processData: false, //不处理内容
-
         success: function (res) {
-          // console.log(res);
           if (res.code === 200) {
-            // window对象具有一个属性parent，用于在iframe中获取父页面
-            parent.location.href = 'login.html';
+            parent.location.href = './login.html';
           }
-        },
+        }
       })
     })
+    // $('.btn-success').on('click', function (e) {
+    //   // 阻止按钮的默认行为
+    //   e.preventDefault();
+    //   // 检测是否填写完整
+    //   if (
+    //     $('.username').val() === '' ||
+    //     $('.email').val() === '' ||
+    //     $('.nickname').val() === '' ||
+    //     $('.password').val() === '' ||
+    //     !$('#exampleInputFile')[0].files[0]) {
+    //     // 通过模态框设置提示
+    //     $('.modal-body').text('没有完整填写表单');
+    //     $('#myModal').modal();
+    //     // alert('请将内容填写完整')
+    //     return;
+    //   };
+    //   // 创建一个form表单
+    //   var fd = new FormData($('form')[0]);
+
+    //   // 发送请求
+    //   // 这个接口是需要传入的图片带有后缀的
+    //   $.post({
+    //     url: 'http://localhost:8000/admin/userinfo_edit',
+    //     data: fd,
+    //     contentType: false, // 不指定内容类型
+    //     processData: false, //不处理内容
+
+    //     success: function (res) {
+    //       // console.log(res);
+    //       if (res.code === 200) {
+    //         // window对象具有一个属性parent，用于在iframe中获取父页面
+    //         parent.location.href = 'login.html';
+    //       }
+    //     },
+    //   })
+    // })
   </script>
 </body>
 

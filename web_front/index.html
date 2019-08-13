@@ -56,7 +56,7 @@
     <div class="main_con clearfix">
         <div class="left_con">
             <ul class="focus_list">
-                <li class="first">
+                <!-- <li class="first">
                     <a href="#"><img src="images/pic01.jpg" alt=""></a>
                     <p>图片说明</p>
                 </li>
@@ -75,7 +75,7 @@
                 <li>
                     <a href="#"><img src="images/pic06.jpg" alt=""></a>
                     <p>图片说明</p>
-                </li>
+                </li> -->
             </ul>
 
             <div class="common_title">
@@ -215,15 +215,57 @@
             <span>|</span>
             <a href="#">招聘人才</a>
             <span>|</span>
-            <a href="#">友情链接</a>		
+            <a href="#">友情链接</a>
         </div>
-        <p>CopyRight © 2019 深圳大事件信息技术股份有限公司   All Rights Reserved</p>
-        <p>电话：0755-****888    粤ICP备*******8号</p>
+        <p>CopyRight © 2019 深圳大事件信息技术股份有限公司 All Rights Reserved</p>
+        <p>电话：0755-****888 粤ICP备*******8号</p>
     </div>
     <!-- js -->
     <script src="./js/jquery-1.12.4.min.js"></script>
     <!-- 导入模板引擎 -->
     <script src="./js/template-web.js"></script>
-    </body>
+    <script type="text/template" id="article">
+        {{each data}}
+        {{if $index===0}}
+        <li class="first">
+        {{else}}
+        <li>
+        {{/if}}
+            <a href="./article.html?id={{$value.id}}"><img src="{{$value.cover}}" alt="">
+            <p>{{$value.title}}</p>
+            </a>
+        </a>
+        </li>
+    {{/each}}
+</script>
+
+    <script>
+        /*
+            制作首页顶部的5个文章简略信息展示
+                - 使用的接口为：
+                    - http://localhost:8000/admin/search
+                - 使用的参数为：
+                    - page : 页数，设置为1表示第一页的最新文章信息
+                    - perpage : 显示的文章条数，设置为5表示5个
+                - 我们下面的操作完全正确
+                    - 后端开发的有毛病，将锅甩给后端即可，我们就可以去吃饭了
+        */
+
+        // 获取5个文章的信息展示
+        $.get({
+            url: 'http://localhost:8000/admin/search',
+            data: {
+                page: 1,
+                perpage: 5,
+            },
+            success: function (res) {
+                console.log(res);
+                if (res.code === 200) {
+                    $('.focus_list').html(template('article', res))
+                }
+            }
+        })
+    </script>
+</body>
 
 </html>

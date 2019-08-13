@@ -187,33 +187,103 @@
                 - 退出成功，跳转到登录页面
                 - 如果点击取消，不进行跳转
       */
-    $('.user_center_link>a').eq(1).on('click', function () {
-      // 设置模态框进行确认 modal和confirm不一样，没有返回truefalse
+    // 点击退出
+    $('.icon-tuichu').on('click', function () {
+      // 获取模态框
       $('#myModal').modal();
-    });
-    // 设置点击离开时
-    $('.btn-leave').on('click', function () {
-      // 发送请求
-      $.post({
-        url: 'http://localhost:8000/admin/logout',
-        success: function (res) {
-          location.href = './login.html';
-        }
-      });
+
+      // 点击残忍离开:
+      $('.btn-leave').on('click', function () {
+        // 发送请求
+        $.post({
+          url: 'http://localhost:8000/admin/logout',
+          success: function (res) {
+            // console.log(res);
+            if (res.code === 200) {
+              location.href = "./login.html";
+            }
+          }
+        })
+      })
     });
 
+    // 获取用户信息
 
-    // 请求数据信息
     $.get({
       url: 'http://localhost:8000/admin/getuser',
       success: function (res) {
-        console.log(res)
+        // console.log(res);
         if (res.code === 200) {
-          $('.user_center_link img,.user_info img').css('src', res.data.user_pic);
           $('.user_info i').text(res.data.nickname);
+          $('user_info img,user_center_link img').text(res.data.user_pic);
         }
       }
     })
+
+
+
+
+
+
+
+    // $('.user_center_link>a').eq(1).on('click', function () {
+    //   // 设置模态框进行确认 modal和confirm不一样，没有返回truefalse
+    //   $('#myModal').modal();
+    // });
+    // // 设置点击离开时
+    // $('.btn-leave').on('click', function () {
+    //   // 发送请求
+    //   $.post({
+    //     url: 'http://localhost:8000/admin/logout',
+    //     success: function (res) {
+    //       location.href = './login.html';
+    //     }
+    //   });
+    // });
+
+
+    // 请求数据信息
+    // $.get({
+    //   url: 'http://localhost:8000/admin/getuser',
+    //   success: function (res) {
+    //     console.log(res)
+    //     if (res.code === 200) {
+    //       $('.user_center_link img,.user_info img').css('src', res.data.user_pic);
+    //       $('.user_info i').text(res.data.nickname);
+    //     }
+    //   }
+    // })
+    // // 点击退出
+    // $('.icon-tuichu').on('click', function () {
+    //   // 设置模态框进行确认 modal和confirm不一样，没有返回truefalse
+    //   $('#myModal').modal();
+
+    //   // 点击残忍退出
+    //   $('.btn-leave').on('click', function () {
+    //     // 发送请求
+    //     $.post({
+    //       url: 'http://localhost:8000/admin/logout',
+    //       success: function (res) {
+    //         // console.log(res);
+    //         if (res.code === 200) {
+    //           location.href = './login.html';
+    //         }
+    //       }
+    //     })
+    //   })
+    // })
+
+    // // 获取数据信息
+    // $.get({
+    //   url: 'http://localhost:8000/admin/getuser',
+    //   success: function (res) {
+    //     console.log(res);
+    //     if (res.code === 200) {
+    //       $('.user_info i').text(res.data.nickname);
+    //       $('.user_center_link img,.user_info img').css('src', res.data.user_pic)
+    //     }
+    //   }
+    // })
   </script>
 
   <!-- iframe标签可以让当前页面中嵌套一个新的页面 -->
